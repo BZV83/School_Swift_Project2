@@ -10,10 +10,11 @@ import SwiftData
 
 @Model
 final class Recipe {
-    var name: String
+    @Attribute(.unique) var name: String
     var instructions: String
     var ingredients: String
     var categories: String
+    var isFavorite: Bool = false
     
     init(name: String, ingredients: String, instructions: String, categories: String) {
         self.name = name

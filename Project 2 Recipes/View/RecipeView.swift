@@ -8,12 +8,20 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
+struct RecipeView: View {
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var viewModel: RecipeViewModel
     @Query private var recipes: [Recipe]
-
+    
+    @State private var searchString: String = ""
+    
     var body: some View {
         NavigationSplitView {
+            //            List {
+            //                Text("Recipes")
+            //                Text("No Recipes")
+            //            }
+            //        } content: {
             List {
                 ForEach(recipes) { recipe in
                     NavigationLink {
@@ -35,6 +43,7 @@ struct ContentView: View {
                     }
                 }
             }
+            .searchable(text: $searchString)
         } detail: {
             Text("Select an item")
         }
@@ -44,6 +53,7 @@ struct ContentView: View {
         withAnimation {
             let newItem = Recipe(name: "New Recipe", ingredients: "These ingredients", instructions: "These are the instructions", categories: "This category")
             modelContext.insert(newItem)
+            //viewModel.fetchData()
         }
     }
 
@@ -52,11 +62,12 @@ struct ContentView: View {
             for index in offsets {
                 modelContext.delete(recipes[index])
             }
+            //viewModel.fetchData()
         }
     }
 }
 
 #Preview {
-    ContentView()
+    RecipeView()
         .modelContainer(for: Recipe.self, inMemory: true)
 }
