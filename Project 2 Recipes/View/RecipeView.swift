@@ -14,6 +14,7 @@ struct RecipeView: View {
     @Query private var recipes: [Recipe]
     
     @State private var searchString: String = ""
+    @State private var isAddModalVisible: Bool = false
     
     var body: some View {
         NavigationSplitView {
@@ -25,8 +26,8 @@ struct RecipeView: View {
             List {
                 ForEach(recipes) { recipe in
                     NavigationLink {
-                        Text(recipe.name)
-                        Text(recipe.instructions)
+                        IndividualRecipeView(recipe: recipe)
+                            .environment(\.modelContext, modelContext)
                     } label: {
                         Text(recipe.name)
                     }
@@ -34,40 +35,43 @@ struct RecipeView: View {
                 .onDelete(perform: deleteItems)
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
-                ToolbarItem {
-                    Button(action: addItem) {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        isAddModalVisible.toggle()
+                    }) {
                         Label("Add Recipe", systemImage: "plus")
                     }
                 }
             }
             .searchable(text: $searchString)
         } detail: {
-            Text("Select an item")
+            Text("Select a recipe")
+        }
+        .sheet(isPresented: $isAddModalVisible) {
+            AddRecipeView(isVisible: $isAddModalVisible)
+                .environment(\.modelContext, modelContext)
         }
     }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Recipe(name: "New Recipe", ingredients: "These ingredients", instructions: "These are the instructions", categories: "This category")
-            modelContext.insert(newItem)
-            //viewModel.fetchData()
-        }
-    }
+    
+//    private func addItem() {
+//        let theCategory = Category(name: "Potatoes")
+//        let newItem = Recipe(
+//            name: "Recipe Name",
+//            ingredients: "These are the ingredients",
+//            instructions: "These are the instructions",
+//            category: theCategory
+//        )
+//        modelContext.insert(newItem)
+//        //viewModel.fetchRecipes()
+//    }
 
     private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(recipes[index])
-            }
-            //viewModel.fetchData()
+        for index in offsets {
+            modelContext.delete(recipes[index])
         }
+        //viewModel.fetchRecipes()
     }
-}
-
-#Preview {
-    RecipeView()
-        .modelContainer(for: Recipe.self, inMemory: true)
 }

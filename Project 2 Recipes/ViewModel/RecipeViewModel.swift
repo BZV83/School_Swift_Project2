@@ -8,19 +8,22 @@
 import Foundation
 import SwiftData
 
-@Observable
 class RecipeViewModel: ObservableObject {
     
-    private(set) var recipes: [Recipe] = []
+    @Published var recipes: [Recipe] = []
+    @Published var categories: [String] = []
+    
+    @Published var selectedCategory: String? = nil
+    @Published var searchString: String = ""
     
     private var modelContext: ModelContext
     
     init(_ modelContext: ModelContext) {
         self.modelContext = modelContext
-        fetchData()
+        fetchRecipes()
     }
     
-    public func fetchData() {
+    public func fetchRecipes() {
         try? modelContext.save()
         
         do {

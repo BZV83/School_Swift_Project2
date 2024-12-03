@@ -11,15 +11,17 @@ import SwiftData
 @Model
 final class Recipe {
     @Attribute(.unique) var name: String
-    var instructions: String
-    var ingredients: String
-    var categories: String
+    @Attribute var summary: String
+    @Attribute var instructions: String
+    @Attribute var ingredients: String
+    @Relationship var category: Category?
     var isFavorite: Bool = false
     
-    init(name: String, ingredients: String, instructions: String, categories: String) {
+    init(name: String, summary: String, ingredients: String, instructions: String, category: Category?) {
         self.name = name
+        self.summary = summary
         self.ingredients = ingredients
         self.instructions = instructions
-        self.categories = categories
+        self.category = category
     }
 }
