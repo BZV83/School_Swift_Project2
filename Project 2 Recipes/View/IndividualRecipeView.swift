@@ -14,16 +14,26 @@ public struct IndividualRecipeView: View {
     @Bindable var recipe: Recipe
     
     public var body: some View {
-        Markdown(
-            """
-            # \(recipe.name)
-            ### \(recipe.summaryInfo)
-            """
-        )
-        
-        Text(recipe.ingredients)
-        Text(recipe.instructions)
-        Text(recipe.categories)
-        Toggle("Is Favorite", isOn: $recipe.isFavorite)
+        VStack {
+            HStack {
+                Text(recipe.name)
+                    .font(.title)
+                Spacer()
+                Button(action: {
+                    recipe.isFavorite.toggle()
+                    print(recipe.summaryInfo)
+                }) {
+                    Label("Is Favorite", systemImage: recipe.isFavorite ? "heart.fill" : "heart")
+                }
+            }
+            Markdown(recipe.summaryInfo)
+            
+            Markdown(recipe.ingredients)
+            Markdown(recipe.instructions)
+            
+            Markdown(recipe.categories)
+            
+//            Toggle("Is Favorite", isOn: $recipe.isFavorite)
+        }
     }
 }
