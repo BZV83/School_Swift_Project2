@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  RecipeView.swift
 //  Project 2 Recipes
 //
 //  Created by Brendan Vick on 11/14/24.
@@ -9,69 +9,56 @@ import SwiftUI
 import SwiftData
 
 struct RecipeView: View {
-    @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject private var viewModel: RecipeViewModel
-    @Query private var recipes: [Recipe]
+    @Environment(RecipeViewModel.self) private var viewModel
     
     @State private var searchString: String = ""
     @State private var isAddModalVisible: Bool = false
     
     var body: some View {
         NavigationSplitView {
-            //            List {
-            //                Text("Recipes")
-            //                Text("No Recipes")
-            //            }
-            //        } content: {
             List {
-                ForEach(recipes) { recipe in
-                    NavigationLink {
-                        IndividualRecipeView(recipe: recipe)
-                            .environment(\.modelContext, modelContext)
-                    } label: {
-                        Text(recipe.name)
-                    }
+                NavigationLink(destination: recipeListView(for: viewModel.recipes, with: "All Recipes")) {
+                    Text("All Recipes")
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
+                NavigationLink(destination: recipeListView(for: viewModel.favoriteRecipes, with: "Favorites")) {
+                    Text("Favorite Recipes")
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        isAddModalVisible.toggle()
-                    }) {
-                        Label("Add Recipe", systemImage: "plus")
-                    }
+                //TODO: - Fetch tags
+                // Navigation link to get all tags associated with that category.
+                // similar to fetchFavorites except the predicate will just check if the string contains the tag
+                ForEach(viewModel.categories, id: \.self) { category in
+                    Text(category)
                 }
             }
-            .searchable(text: $searchString)
+        } content: {
+            recipeListView(for: viewModel.recipes, with: "Your Recipes")
         } detail: {
             Text("Select a recipe")
         }
         .sheet(isPresented: $isAddModalVisible) {
             AddRecipeView(isVisible: $isAddModalVisible)
-                .environment(\.modelContext, modelContext)
         }
     }
     
-//    private func addItem() {
-//        let theCategory = Category(name: "Potatoes")
-//        let newItem = Recipe(
-//            name: "Recipe Name",
-//            ingredients: "These are the ingredients",
-//            instructions: "These are the instructions",
-//            category: theCategory
-//        )
-//        modelContext.insert(newItem)
-//        //viewModel.fetchRecipes()
-//    }
-
-    private func deleteItems(offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(recipes[index])
+    private func recipeListView(for recipes: [Recipe], with title: String) -> some View {
+        List {
+            ForEach(recipes) { recipe in
+                NavigationLink(recipe.name, destination: IndividualRecipeView(recipe: recipe))
+            }
         }
-        //viewModel.fetchRecipes()
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {
+                    isAddModalVisible.toggle()
+                }) {
+                    Label("Add Recipe", systemImage: "plus")
+                }
+            }
+//                ToolbarItem(placement: .topBarTrailing) {
+//                    EditButton()
+//                }
+        }
+        .navigationTitle(title)
+        .searchable(text: $searchString)
     }
 }

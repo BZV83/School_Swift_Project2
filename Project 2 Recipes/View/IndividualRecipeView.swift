@@ -10,20 +10,20 @@ import SwiftUI
 import MarkdownUI
 
 public struct IndividualRecipeView: View {
-    @EnvironmentObject var viewModel: RecipeViewModel
-    let recipe: Recipe
+    @Environment(RecipeViewModel.self) var viewModel
+    @Bindable var recipe: Recipe
     
     public var body: some View {
         Markdown(
             """
             # \(recipe.name)
-            ### \(recipe.summary)
+            ### \(recipe.summaryInfo)
             """
         )
         
-        
-        
+        Text(recipe.ingredients)
         Text(recipe.instructions)
-        Text(recipe.category?.name ?? "No category")
+        Text(recipe.categories)
+        Toggle("Is Favorite", isOn: $recipe.isFavorite)
     }
 }

@@ -8,19 +8,45 @@
 import Foundation
 import SwiftData
 
+@Observable
 class RecipeViewModel: ObservableObject {
     
-    @Published var recipes: [Recipe] = []
-    @Published var categories: [String] = []
-    
-    @Published var selectedCategory: String? = nil
-    @Published var searchString: String = ""
+    //MARK: - Properties
     
     private var modelContext: ModelContext
     
+    //MARK: - Model Access
+    
+    private(set) var recipes: [Recipe] = []
+    private(set) var favoriteRecipes: [Recipe] = []
+    private(set) var categories: [String] = []
+    
+    func recipes(for category: String) -> [Recipe] {
+        //needs work
+        return []
+    }
+    
+    //MARK: - Init
+    
     init(_ modelContext: ModelContext) {
         self.modelContext = modelContext
+        fetchData()
+    }
+    
+    //MARK: - User intent
+    
+    
+    // MARK: - Private helpers
+    
+    private func fetchData() {
         fetchRecipes()
+        fetchFavorites()
+        gatherCategories()
+        
+        if recipes.isEmpty {
+            sampleRecipes.forEach { modelContext.insert($0) }
+            fetchData()
+        }
     }
     
     public func fetchRecipes() {
@@ -35,16 +61,34 @@ class RecipeViewModel: ObservableObject {
         }
     }
     
-    //fetch ability
-//    private func fetchFavorites() {
-//        do {
-//            let descriptor = FetchDescriptor<Recipe>(
-//                predicate: #Predicate { $0.isFavorite },
-//                sortBy: [SortDescriptor(\.name)])
-//            
-//            favorites = try modelContext.fetch(descriptor)
-//        } catch {
-//            print("Failed to load favorites.")
-//        }
-//    }
+    private func fetchFavorites() {
+        do {
+            let descriptor = FetchDescriptor<Recipe>(
+                predicate: #Predicate { $0.isFavorite },
+                sortBy: [SortDescriptor(\.name)]
+            )
+            
+            favoriteRecipes = try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to load favorites.")
+        }
+    }
+    
+    private func gatherCategories() {
+        var tags: Set<String> = []
+        
+        recipes.forEach { recipe in
+            let categoryPieces = recipe.categories.split(separator: ",")
+            
+            categoryPieces.forEach { category in
+                let canonicalCategory = category.trimmingCharacters(in: .whitespacesAndNewlines).capitalized
+                
+                if !tags.contains(canonicalCategory) {
+                    tags.insert(canonicalCategory)
+                }
+            }
+        }
+        
+        categories = Array(tags)
+    }
 }

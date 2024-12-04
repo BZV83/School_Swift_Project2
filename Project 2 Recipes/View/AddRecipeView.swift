@@ -9,16 +9,16 @@ import Foundation
 import SwiftUI
 
 struct AddRecipeView: View {
-    @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject var viewModel: RecipeViewModel
+    @Environment(RecipeViewModel.self) var viewModel
     
     @Binding var isVisible: Bool
     
     @State private var recipeName: String = ""
     @State private var recipeDescription: String = ""
-    @State private var ingredients: String = "Just some ingredients"
+    @State private var ingredients: String = ""
     @State private var instructions: String = ""
-    @State private var category: Category? = Category(name: "")
+    @State private var category: String = ""
+    @State private var notes: String = ""
     
     var body: some View {
         NavigationStack {
@@ -47,7 +47,7 @@ struct AddRecipeView: View {
                 
                 Section {
                     Button("Save") {
-                        saveRecipe()
+                        //saveRecipe()
                     }
                 }
             }
@@ -58,21 +58,24 @@ struct AddRecipeView: View {
         }
     }
         
-    private func saveRecipe() {
-        guard !recipeName.isEmpty, !recipeDescription.isEmpty, !ingredients.isEmpty, !instructions.isEmpty else {
-            return
-        }
-
-        let category = Category(name: "selectedCategory")
-        let newRecipe = Recipe(
-            name: recipeName,
-            summary: recipeDescription,
-            ingredients: ingredients,
-            instructions: instructions,
-            category: category
-        )
-
-        modelContext.insert(newRecipe)
-        isVisible = false
-    }
+    //TODO: - Function into view model
+    
+//    private func saveRecipe() {
+//        guard !recipeName.isEmpty, !recipeDescription.isEmpty, !ingredients.isEmpty, !instructions.isEmpty else {
+//            return
+//        }
+//        
+//        let newRecipe = Recipe(
+//            name: recipeName,
+//            summaryInfo: recipeDescription,
+//            ingredients: ingredients,
+//            instructions: instructions,
+//            categories: category,
+//            notes: notes,
+//            isFavorite: false
+//        )
+//
+//        viewModel.modelContext.insert(newRecipe)
+//        isVisible = false
+//    }
 }

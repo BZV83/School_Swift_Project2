@@ -15,9 +15,9 @@ struct Project_2_RecipesApp: App {
     var body: some Scene {
         WindowGroup {
             RecipeView()
-                .environmentObject(viewModel)
         }
-        .modelContainer(for: [Recipe.self])
+        .modelContainer(container)
+        .environment(viewModel)
     }
     
     init () {
