@@ -35,5 +35,6 @@ public struct IndividualRecipeView: View {
             
 //            Toggle("Is Favorite", isOn: $recipe.isFavorite)
         }
+        .padding()
     }
 }
