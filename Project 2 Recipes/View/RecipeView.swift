@@ -56,11 +56,11 @@ struct RecipeView: View {
                     Label("Add Recipe", systemImage: "plus")
                 }
             }
-//            ToolbarItem {
-//                EditButton()
-//            }
+            ToolbarItem {
+                //TODO: - Delete functionality
+            }
         }
         .navigationTitle(title)
-        .searchable(text: $searchString)
+        .searchable(text: $searchString) //TODO: - Make items searchable
     }
 }

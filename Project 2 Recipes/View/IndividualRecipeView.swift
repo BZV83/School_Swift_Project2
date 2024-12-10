@@ -25,10 +25,10 @@ public struct IndividualRecipeView: View {
             }
             Markdown(recipe.summaryInfo)
             
-            Markdown(recipe.ingredients)
+            Markdown(recipe.ingredients) //TODO: - Change format of ingredients
             Markdown(recipe.instructions)
             Spacer()
-            Markdown(recipe.categories)
+            Markdown(recipe.categories) //TODO: - Change format of categories
         }
         .onChange(of: recipe.isFavorite) { viewModel.refreshData() }
         .toolbar {
@@ -46,5 +46,10 @@ public struct IndividualRecipeView: View {
     
     private func editItem() {
         isEditing.toggle()
+    }
+    
+    private func separateListItems(_ list: String) -> [String] {
+        //TODO: - Separate ingredients into different lines.
+        return [""]
     }
 }
