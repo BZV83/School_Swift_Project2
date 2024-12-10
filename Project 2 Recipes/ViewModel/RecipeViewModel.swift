@@ -22,8 +22,9 @@ class RecipeViewModel: ObservableObject {
     private(set) var categories: [String] = []
     
     func recipes(for category: String) -> [Recipe] {
-        //needs work
-        return []
+        return recipes.filter {
+            $0.categories.lowercased().contains(category.lowercased())
+        }
     }
     
     //MARK: - Init
@@ -35,6 +36,19 @@ class RecipeViewModel: ObservableObject {
     
     //MARK: - User intent
     
+    func refreshData() {
+        fetchData()
+    }
+    
+    func save(_ recipe: Recipe) {
+        modelContext.insert(recipe)
+        fetchData()
+    }
+    
+    func update(_ recipe: Recipe) {
+        saveAllChanges()
+        fetchData()
+    }
     
     // MARK: - Private helpers
     
@@ -90,5 +104,9 @@ class RecipeViewModel: ObservableObject {
         }
         
         categories = Array(tags)
+    }
+    
+    private func saveAllChanges() {
+        try? modelContext.save()
     }
 }

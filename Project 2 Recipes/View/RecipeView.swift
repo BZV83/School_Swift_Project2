@@ -12,7 +12,7 @@ struct RecipeView: View {
     @Environment(RecipeViewModel.self) private var viewModel
     
     @State private var searchString: String = ""
-    @State private var isAddModalVisible: Bool = false
+    @State private var addEditRecipe: Bool = false
     
     var body: some View {
         NavigationSplitView {
@@ -23,20 +23,22 @@ struct RecipeView: View {
                 NavigationLink(destination: recipeListView(for: viewModel.favoriteRecipes, with: "Favorites")) {
                     Text("Favorite Recipes")
                 }
-                //TODO: - Fetch tags
-                // Navigation link to get all tags associated with that category.
-                // similar to fetchFavorites except the predicate will just check if the string contains the tag
                 ForEach(viewModel.categories, id: \.self) { category in
-                    Text(category)
+                    NavigationLink(destination: recipeListView(
+                        for: viewModel.recipes(for: category),
+                        with: "\(category) Recipes")
+                    ) {
+                        Text(category)
+                    }
                 }
+            }
+            .sheet(isPresented: $addEditRecipe) {
+                AddEditRecipe(editRecipe: nil)
             }
         } content: {
             recipeListView(for: viewModel.recipes, with: "Your Recipes")
         } detail: {
             Text("Select a recipe")
-        }
-        .sheet(isPresented: $isAddModalVisible) {
-            AddRecipeView(isVisible: $isAddModalVisible)
         }
     }
     
@@ -49,14 +51,14 @@ struct RecipeView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    isAddModalVisible.toggle()
+                    addEditRecipe.toggle()
                 }) {
                     Label("Add Recipe", systemImage: "plus")
                 }
             }
-//                ToolbarItem(placement: .topBarTrailing) {
-//                    EditButton()
-//                }
+//            ToolbarItem {
+//                EditButton()
+//            }
         }
         .navigationTitle(title)
         .searchable(text: $searchString)
