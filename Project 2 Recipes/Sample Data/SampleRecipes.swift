@@ -30,7 +30,7 @@ let sampleRecipes = [
             3. Probably enjoy
             """,
         categories: """
-            dinner, American
+            Dinner, American
             """,
         notes: """
             
@@ -59,7 +59,7 @@ let sampleRecipes = [
             3. Devour
             """,
         categories: """
-            dessert, snacks
+            Dessert, Snacks
             """,
         notes: """
             

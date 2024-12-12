@@ -50,6 +50,16 @@ class RecipeViewModel: ObservableObject {
         fetchData()
     }
     
+    func deleteRecipe(_ recipe: Recipe) {
+        modelContext.delete(recipe)
+        fetchData()
+    }
+    
+    func markFavorite(_ recipe: Recipe) {
+        recipe.isFavorite.toggle()
+        fetchData()
+    }
+    
     // MARK: - Private helpers
     
     private func fetchData() {

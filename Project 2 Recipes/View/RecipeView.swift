@@ -13,6 +13,7 @@ struct RecipeView: View {
     
     @State private var searchString: String = ""
     @State private var addEditRecipe: Bool = false
+    @State private var isDeleting: Bool = false
     
     var body: some View {
         NavigationSplitView {
@@ -23,12 +24,14 @@ struct RecipeView: View {
                 NavigationLink(destination: recipeListView(for: viewModel.favoriteRecipes, with: "Favorites")) {
                     Text("Favorite Recipes")
                 }
-                ForEach(viewModel.categories, id: \.self) { category in
-                    NavigationLink(destination: recipeListView(
-                        for: viewModel.recipes(for: category),
-                        with: "\(category) Recipes")
-                    ) {
-                        Text(category)
+                Section(header: Text("Categories")) {
+                    ForEach(viewModel.categories, id: \.self) { category in
+                        NavigationLink(destination: recipeListView(
+                            for: viewModel.recipes(for: category),
+                            with: "\(category) Recipes")
+                        ) {
+                            Text(category)
+                        }
                     }
                 }
             }
@@ -44,8 +47,31 @@ struct RecipeView: View {
     
     private func recipeListView(for recipes: [Recipe], with title: String) -> some View {
         List {
-            ForEach(recipes) { recipe in
-                NavigationLink(recipe.name, destination: IndividualRecipeView(recipe: recipe))
+            ForEach(recipes.filter { recipe in
+                //Search capability helped by Claude
+                searchString.isEmpty ||
+                recipe.name.localizedCaseInsensitiveContains(searchString) ||
+                recipe.categories.localizedCaseInsensitiveContains(searchString) ||
+                recipe.ingredients.localizedCaseInsensitiveContains(searchString) ||
+                recipe.summaryInfo.localizedCaseInsensitiveContains(searchString) ||
+                recipe.notes.localizedCaseInsensitiveContains(searchString)
+            }) { recipe in
+                if isDeleting {
+                    Button(action: {
+                        withAnimation {
+                            viewModel.deleteRecipe(recipe)
+                        }
+                        isDeleting = false
+                    }) {
+                        HStack {
+                            Image(systemName: "minus.circle.fill")
+                                .foregroundColor(.red)
+                            Text(recipe.name)
+                        }
+                    }
+                } else {
+                    NavigationLink(recipe.name, destination: IndividualRecipeView(recipe: recipe))
+                }
             }
         }
         .toolbar {
@@ -57,10 +83,12 @@ struct RecipeView: View {
                 }
             }
             ToolbarItem {
-                //TODO: - Delete functionality
+                Button(isDeleting ? "Done" : "Edit") {
+                    isDeleting.toggle()
+                }
             }
         }
         .navigationTitle(title)
-        .searchable(text: $searchString) //TODO: - Make items searchable
+        .searchable(text: $searchString, prompt: "Search Recipes")
     }
 }

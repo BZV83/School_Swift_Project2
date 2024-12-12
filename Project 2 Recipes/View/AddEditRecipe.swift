@@ -24,6 +24,14 @@ struct AddEditRecipe: View {
         isFavorite: false
     )
     
+    // Summary info fields
+    @State private var author = ""
+    @State private var date = ""
+    @State private var timeRequired = ""
+    @State private var servings = ""
+    @State private var difficulty = ""
+    @State private var calories = ""
+    
     init(editRecipe: Recipe?) {
         self.editRecipe = editRecipe
         
@@ -43,19 +51,39 @@ struct AddEditRecipe: View {
             Form {
                 Section(header: Text("Name")) {
                     TextField("Recipe Name", text: $recipe.name)
-                    TextField("Short Summary", text: $recipe.summaryInfo, axis: .vertical)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
                 }
                 
-                Section(header: Text("Recipe Ingredients (Entered in bullet points)")) {
+                Section(header: Text("Recipe Summary")) {
+                    TextField("Author", text: $author)
+                    TextField("Date", text: $date)
+                    TextField("Time Required", text: $timeRequired)
+                    TextField("Servings", text: $servings)
+                    TextField("Difficulty", text: $difficulty)
+                    TextField("Calories", text: $calories)
+                }
+                
+                Section(header: Text("Recipe Ingredients (Separated by a new line)")) {
                     TextEditor(text: $recipe.ingredients)
+                        .frame(height: 100)
                 }
                 
-                Section(header: Text("Recipe Instructions (Bullet points, numbered, or just plain text)")) {
+                Section(header: Text("Recipe Instructions (plain text)")) {
                     TextEditor(text: $recipe.instructions)
+                        .frame(height: 200)
+                }
+                
+                Section(header: Text("Notes")) {
+                    TextEditor(text: $recipe.notes)
                 }
                 
                 Section(header: Text("Category")) {
                     TextField("Categories (comma separated)", text: $recipe.categories)
+                }
+                
+                Section {
+                    Toggle("Favorite this item?", isOn: $recipe.isFavorite)
                 }
                 
                 Section {
@@ -64,7 +92,19 @@ struct AddEditRecipe: View {
                     }
                 }
             }
-            .navigationTitle("Add New Recipe")
+            .toolbar {
+                ToolbarItem {
+                    Button("Cancel") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+            }
+            .navigationTitle(isEditing ? "Edit Recipe" : "Add New Recipe")
+            .onAppear {
+                if let recipeToEdit = editRecipe {
+                    parseSummaryInfo(recipeToEdit.summaryInfo)
+                }
+            }
         }
     }
     
@@ -73,6 +113,8 @@ struct AddEditRecipe: View {
     }
     
     private func saveRecipe() {
+        recipe.summaryInfo = formatSummaryInfo()
+        
         if isEditing {
             if let recipeToEdit = editRecipe {
                 recipeToEdit.name = recipe.name
@@ -89,5 +131,36 @@ struct AddEditRecipe: View {
         }
         
         presentationMode.wrappedValue.dismiss()
+    }
+    
+    private func formatSummaryInfo() -> String {
+        return """
+        *Author*: \(author)
+        *Date*: \(date)
+        *Time Required*: \(timeRequired)
+        *Servings*: \(servings)
+        *Difficulty*: \(difficulty)
+        *Calories*: \(calories)
+        """
+    }
+    
+    // Chat help generated
+    private func parseSummaryInfo(_ summary: String) {
+        let lines = summary.split(separator: "\n")
+        for line in lines {
+            if line.contains("*Author*") {
+                author = line.replacingOccurrences(of: "*Author*: ", with: "")
+            } else if line.contains("*Date*") {
+                date = line.replacingOccurrences(of: "*Date*: ", with: "")
+            } else if line.contains("*Time Required*") {
+                timeRequired = line.replacingOccurrences(of: "*Time Required*: ", with: "")
+            } else if line.contains("*Servings*") {
+                servings = line.replacingOccurrences(of: "*Servings*: ", with: "")
+            } else if line.contains("*Difficulty*") {
+                difficulty = line.replacingOccurrences(of: "*Difficulty*: ", with: "")
+            } else if line.contains("*Calories*") {
+                calories = line.replacingOccurrences(of: "*Calories*: ", with: "")
+            }
+        }
     }
 }
