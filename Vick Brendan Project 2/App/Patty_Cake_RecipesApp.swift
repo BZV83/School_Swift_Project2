@@ -1,5 +1,5 @@
 //
-//  Project_2_RecipesApp.swift
+//  Patty_Cake_RecipesApp.swift
 //  Project 2 Recipes
 //
 //  Created by Brendan Vick on 11/14/24.
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct Project_2_RecipesApp: App {
+struct Patty_Cake_RecipesApp: App {
     let container: ModelContainer
     let viewModel: RecipeViewModel
     var body: some Scene {

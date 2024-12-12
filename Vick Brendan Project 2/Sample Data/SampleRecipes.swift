@@ -19,10 +19,10 @@ let sampleRecipes = [
             *Calories*: 500
             """,
         ingredients: """
-            - Potatoes
-            - Flour
-            - Sugar
-            - Eggs
+            - 2 Potatoes
+            - 2 Cups Flour
+            - 1/2 Cup Sugar
+            - 5 Eggs
             """,
         instructions: """
             1. Make
@@ -49,9 +49,9 @@ let sampleRecipes = [
             """,
         ingredients: """
             - 2 Eggs
-            - Flour
-            - Sugar
-            - Chocolate Chips
+            - 1 Cup Flour
+            - 1/2 Cup Sugar
+            - 1 Cup Chocolate Chips
             """,
         instructions: """
             1. Mix
