@@ -73,7 +73,7 @@ class RecipeViewModel: ObservableObject {
         }
     }
     
-    public func fetchRecipes() {
+    private func fetchRecipes() {
         try? modelContext.save()
         
         do {
