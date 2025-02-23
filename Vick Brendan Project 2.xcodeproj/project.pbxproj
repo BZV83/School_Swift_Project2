@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E1160B12D6BBFA2007BE19D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0E1160B02D6BBF9A007BE19D /* README.md */; };
 		0EF933E22CEF9D33003E74E4 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0EF933E12CEF9D33003E74E4 /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0E1160B02D6BBF9A007BE19D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0EE61CD82CE6F64C00614EDB /* Patty Cake.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Patty Cake.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -37,6 +39,7 @@
 		0EE61CCF2CE6F64C00614EDB = {
 			isa = PBXGroup;
 			children = (
+				0E1160B02D6BBF9A007BE19D /* README.md */,
 				0EE61CDA2CE6F64C00614EDB /* Vick Brendan Project 2 */,
 				0EE61CD92CE6F64C00614EDB /* Products */,
 			);
@@ -118,6 +121,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E1160B12D6BBFA2007BE19D /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
